@@ -1,15 +1,14 @@
-
 import './App.css'
-import Header from "./components/Header";
-import Timer from "./components/Timer";
+import {BrowserRouter} from "react-router-dom";
+import AppRouter from "./components/AppRouter";
 
 function App() {
 
-  return (
-    <>
-        <Header  />
-    </>
-  )
+    return (
+        <BrowserRouter>
+            <AppRouter />
+        </BrowserRouter>
+    )
 }
 
 export default App
