@@ -1,18 +1,17 @@
 import Select from "react-select";
 
-const MultySelect = ({options, question, changeCallback}) => {
+const MultySelect = ({options, question, changeCallback, value}) => {
     return <div>
         {question} (выберите несколько вариантов)
         <Select
             onChange={changeCallback}
-            //closeMenuOnSelect={false}
-            //blurInputOnSelect={true}
             hideSelectedOptions={true}
             closeMenuOnSelect={false}
             blurInputOnSelect={false}
             placeholder='Выберите несколько вариантов'
             isMulti
             options={options}
+            value={value}
         />
     </div>
 }
