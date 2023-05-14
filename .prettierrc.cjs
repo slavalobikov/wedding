@@ -2,7 +2,7 @@ module.exports = {
   "printWidth": 120,
   "tabWidth": 2,
   "tabs": false,
-  "semi": false,
+  "semi": true,
   "singleQuote": true,
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
@@ -11,4 +11,5 @@ module.exports = {
   "bracketLine": true,
   "arrowParens": "always",
   "endOfLine": "auto",
+
 }
