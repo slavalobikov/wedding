@@ -186,12 +186,12 @@ class AppwriteService {
   }
 
   // questions
-  static getQuestions = () => {
+  static getQuestions = (callback) => {
     const promise = this.#databases.listDocuments(envs.questions.databaseId, envs.questions.guestCollectionId)
 
     promise.then(
       function (response) {
-        console.log(response) // Success
+        callback(response?.documents)
       },
       function (error) {
         console.log(error) // Failure

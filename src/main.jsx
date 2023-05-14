@@ -10,6 +10,5 @@ if (!sessionStorage.getItem('_session')) {
 }
 
 AppwriteService.getGuests()
-AppwriteService.getQuestions()
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />)
