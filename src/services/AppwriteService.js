@@ -1,5 +1,6 @@
-import { Client, Account, Databases, ID, Functions } from 'appwrite'
-import config from '../../config.js'
+import { Client, Account, Databases, ID, Functions } from 'appwrite';
+import config from '../../config.js';
+import { createToast } from '../utils'
 
 const envs = {
   baseUrl: config.APPWRITE.BASE_URL,
@@ -11,245 +12,181 @@ const envs = {
   },
   questions: {
     databaseId: config.APPWRITE.QUESTIONS.DATABASE_ID,
-    guestCollectionId: config.APPWRITE.QUESTIONS.COLLECTION_ID,
+    questionCollectionId: config.APPWRITE.QUESTIONS.COLLECTION_ID,
   },
   functions: {
     createGuestFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_ID,
-  }
-}
+    createGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_GROUP_FUNCTION_ID,
+    getGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.GET_GUEST_GROUP_FUNCTION_ID,
+    updateGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_GUEST_GROUP_FUNCTION_ID,
+  },
+};
 
 class AppwriteService {
-  static #client = new Client()
-  static #account = new Account(this.#client)
-  static #databases = new Databases(this.#client)
-  static #functions = new Functions(this.#client)
+  static #client = new Client();
+  static #account = new Account(this.#client);
+  static #databases = new Databases(this.#client);
+  static #functions = new Functions(this.#client);
 
   // init
   static init = () => {
-    this.#client.setEndpoint(envs.baseUrl).setProject(envs.projectId)
-  }
+    this.#client.setEndpoint(envs.baseUrl).setProject(envs.projectId);
+  };
 
-  static createGuest = (data) => {
-    let promise = this.#functions.createExecution(envs.functions.createGuestFunctionId, JSON.stringify(data))
+  // guests
+  static getGuest = (guestId, callback) => {
+    const promise = this.#databases.getDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId);
 
     promise.then(
       function (response) {
-        console.log(response) // Success
+        callback(response);
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
+    );
+  };
+  static createGuest = (data, onPending, onSuccess) => {
+    const promise = () => this.#functions.createExecution(envs.functions.createGuestFunctionId, JSON.stringify(data));
+    createToast(promise, 'Guest creating...', 'Guest created!', onPending, onSuccess)
+  };
+  static updateGuest = ({ guestId, ...data }, onPending, onSuccess) => {
+    const promise = () => this.#databases.updateDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId, data);
+    createToast(promise, 'Guest updating...', 'Guest updated!', onPending, onSuccess)
   }
+
+
+  // groups
+  static getGuestGroups = (callback) => {
+    const promise = this.#databases.listDocuments(envs.guests.databaseId, envs.guests.guestGroupCollectionId);
+
+    promise.then(
+      function (response) {
+        callback(response?.documents);
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+  };
+  static getGuestGroup = (data, callback) => {
+    let promise = this.#functions.createExecution(envs.functions.getGuestGroupFunctionId, JSON.stringify(data));
+
+    promise.then(
+      function (response) {
+        callback(JSON.parse(response?.response))
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+  };
+  static updateGuestGroup = (data) => {
+    let promise = this.#functions.createExecution(envs.functions.updateGuestGroupFunctionId, JSON.stringify(data));
+
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+  };
 
   //session
   static createSession = (email, password) => {
-    const promise = this.#account.createEmailSession(email, password)
+    const promise = this.#account.createEmailSession(email, password);
 
     promise.then(
       function (response) {
-        sessionStorage.setItem('_session', JSON.stringify(response))
+        sessionStorage.setItem('_session', JSON.stringify(response));
+        console.log(response);
       },
       function (error) {
-        console.log('ERR SESSION ', error)
+        console.log('ERR SESSION ', error);
       },
-    )
-  }
+    );
+  };
   static deleteSession = () => {
-    const sessionId = JSON.parse(sessionStorage.getItem('_session')).$id
-    const promise = this.#account.deleteSession(sessionId)
+    const sessionId = JSON.parse(sessionStorage.getItem('_session')).$id;
+    const promise = this.#account.deleteSession(sessionId);
 
     promise.then(
       function (response) {
-        sessionStorage.removeItem('_session')
+        sessionStorage.removeItem('_session');
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
-  }
-
-  //guests
-  static getGuests = () => {
-    const promise = this.#databases.listDocuments(envs.guests.databaseId, envs.guests.guestCollectionId)
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static addGuest = (guestName, guestWelcomeText) => {
-    const promise = this.#databases.createDocument(envs.guests.databaseId, envs.guests.guestCollectionId, ID.unique(), {
-      guestName,
-      guestWelcomeText,
-    })
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static updateGuest = (guestId) => {
-    const promise = this.#databases.updateDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId)
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static deleteGuest = (guestId) => {
-    const promise = this.#databases.deleteDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId)
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-
-  //guest group
-  static getGuestGroups = () => {
-    const promise = this.#databases.listDocuments(envs.guests.databaseId, envs.guests.guestGroupCollectionId)
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static addGuestGroup = (guestIds) => {
-    const promise = this.#databases.createDocument(
-      envs.guests.databaseId,
-      envs.guests.guestGroupCollectionId,
-      ID.unique(),
-      { guestIds },
-    )
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static updateGuestGroup = (guestGroupId) => {
-    const promise = this.#databases.updateDocument(
-      envs.guests.databaseId,
-      envs.guests.guestGroupCollectionId,
-      guestGroupId,
-    )
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
-  static deleteGuestGroup = (guestGroupId) => {
-    const promise = this.#databases.deleteDocument(
-      envs.guests.databaseId,
-      envs.guests.guestGroupCollectionId,
-      guestGroupId,
-    )
-
-    promise.then(
-      function (response) {
-        console.log(response) // Success
-      },
-      function (error) {
-        console.log(error) // Failure
-      },
-    )
-  }
+    );
+  };
 
   // questions
   static getQuestions = (callback) => {
-    const promise = this.#databases.listDocuments(envs.questions.databaseId, envs.questions.guestCollectionId)
+    const promise = this.#databases.listDocuments(envs.questions.databaseId, envs.questions.questionCollectionId);
 
     promise.then(
       function (response) {
-        callback(response?.documents)
+        callback(response?.documents);
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
-  }
+    );
+  };
   static addQuestion = (questionTitle, answers) => {
     const promise = this.#databases.createDocument(
       envs.questions.databaseId,
-      envs.questions.guestCollectionId,
+      envs.questions.questionCollectionId,
       ID.unique(),
       {
         questionTitle,
         answers,
       },
-    )
+    );
 
     promise.then(
       function (response) {
-        console.log(response) // Success
+        console.log(response); // Success
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
-  }
+    );
+  };
   static updateQuestion = (questionId) => {
     const promise = this.#databases.updateDocument(
       envs.questions.databaseId,
-      envs.questions.guestCollectionId,
+      envs.questions.questionCollectionId,
       questionId,
-    )
+    );
 
     promise.then(
       function (response) {
-        console.log(response) // Success
+        console.log(response); // Success
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
-  }
+    );
+  };
   static deleteQuestion = (questionId) => {
     const promise = this.#databases.deleteDocument(
       envs.questions.databaseId,
-      envs.questions.guestCollectionId,
+      envs.questions.questionCollectionId,
       questionId,
-    )
+    );
 
     promise.then(
       function (response) {
-        console.log(response) // Success
+        console.log(response); // Success
       },
       function (error) {
-        console.log(error) // Failure
+        console.log(error); // Failure
       },
-    )
-  }
+    );
+  };
 }
 
-export default AppwriteService
+export default AppwriteService;

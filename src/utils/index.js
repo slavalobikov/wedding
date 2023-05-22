@@ -32,7 +32,7 @@ const toastErrorConfig = {
   delay: 1000,
 }
 
-export const createToast = (promise, pendingText, successText) => {
+export const createToast = (promise, pendingText, successText, onPending, onSuccess) => {
   toast.promise(
     promise,
     {
@@ -40,5 +40,19 @@ export const createToast = (promise, pendingText, successText) => {
       success: { ...toastSuccessConfig, render: `🥳 ${successText}` },
       error: { ...toastErrorConfig, render: 'Something wents wrong 🤯' },
     }
-  )
+  );
+
+  const unsubscribe = toast.onChange((payload) => {
+    switch (payload.status) {
+      case "added":
+        onPending && onPending();
+        break;
+      case "updated":
+        onSuccess && onSuccess();
+        break;
+      case "removed":
+        unsubscribe();
+        break;
+    }
+  });
 }

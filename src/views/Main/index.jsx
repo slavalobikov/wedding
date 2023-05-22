@@ -1,80 +1,85 @@
-import {useEffect, useState} from 'react'
-import Header from '../../components/Header'
-import {useParams} from 'react-router-dom'
-import AppwriteService from '../../services/AppwriteService.js'
-import SelectInput from "../../components/SelectInput";
+import { useEffect, useState } from 'react';
+import Header from '../../components/Header';
+import { useParams } from 'react-router-dom';
+import AppwriteService from '../../services/AppwriteService.js';
+import SelectInput from '../../components/SelectInput';
+import { Modal } from '../../components';
+import ModalChildren from './ModalChildren';
 
 const Main = () => {
-    const params = useParams()
-    console.log('params', params['*'])
-    const [question, setQuestion] = useState([])
+  const params = useParams();
+  console.log('params', params['*']);
+  const [questions, setQuestions] = useState([]);
 
-    const [name, setName] = useState('')
-    const [welcomeText, setWelcomeText] = useState('')
-    const [priority, setPiority] = useState('')
+  const [modalShown, setModalShown] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalProps, setModalProps] = useState(null);
 
-    const onNameChange = ({target: {value}}) => {
-        setName(value)
-    }
+  useEffect(() => {
+    AppwriteService.getQuestions(setQuestions);
+  }, []);
 
-    const onWelcomeChange = ({target: {value}}) => {
-        setWelcomeText(value)
-    }
+  // const OnUpdate = () => {
+  //   AppwriteService.updateGuestGroup({
+  //     welcomeText,
+  //     priority,
+  //     guestName: name,
+  //     guestGroupId: '103e5a19-56c8-4161-be9e-f09b8800c6f8',
+  //     isRemoveGuest: true,
+  //     guests: ['6463aab50c38ba25e3a0'],
+  //   });
+  // };
 
-    const onPriorityChange = ({target: {value}}) => {
-        setPiority(value)
-    }
+  const onShowModalPress = () => {
+    setModalTitle('Редактировать гостя')
+    setModalProps({ guestId: '646a184200d6d617317b' });
+    setModalShown(true);
+  };
 
-    useEffect(() => {
-        AppwriteService.getQuestions(setQuestion)
-    }, [])
-    const onNameSubmit = () => {
-        // AppwriteService.addGuest(name, welcomeText)
-        AppwriteService.createGuest({
-            welcomeText,
-            priority,
-            guestName: name,
-            // groupId: '4297dc53-606d-4155-b849-6af5ee813216',
-        })
-    }
+  return (
+    <>
+      <Header />
+      {/* <button onClick={OnUpdate}>Update</button> */}
+      <button onClick={() => AppwriteService.deleteSession()}>delete session</button>
+      <div>
+        В верхней части страницы находится индивидуальное обращение. Если его нет, то вместо него выводится
+        “Дорогой/ая/ие” и имя/имена гостя/гостей. Первая часть обращения выводится в зависимости от пола гостя
+        (“дорогой” для мужского, “дорогая” для женского) или для группы гостей (“дорогие”).
+      </div>
+      <div>Далее размещена подробная информация о дате, месте проведения и остальных деталях мероприятия</div>
+      <div>
+        <div>
+          {questions?.map((el) => (
+            <SelectInput
+              key={1}
+              isMulty={el?.allowMiltyAnswer}
+              question={el?.questionTitle}
+              changeCallback={(e) => console.log(e)}
+              options={el?.answers?.map((an) => {
+                return {
+                  value: an,
+                  label: an,
+                };
+              })}
+            />
+          ))}
+        </div>
+      </div>
 
-    return (
-        <>
-            <Header/>
-            <input type='text' value={name} onChange={onNameChange} placeholder='name'/>
-            <input type='text' value={welcomeText} onChange={onWelcomeChange} placeholder='welcome'/>
-            <input type='text' value={priority} onChange={onPriorityChange} placeholder='priority'/>
-            <button onClick={onNameSubmit}>submit</button>
-            <button onClick={() => AppwriteService.deleteSession()}>delete session</button>
-            <div>
-                В верхней части страницы находится индивидуальное обращение. Если его нет, то вместо него выводится
-                “Дорогой/ая/ие” и имя/имена гостя/гостей. Первая часть обращения выводится в зависимости от пола гостя
-                (“дорогой” для мужского, “дорогая” для женского) или для группы гостей (“дорогие”).
-            </div>
-            <div>Далее размещена подробная информация о дате, месте проведения и остальных деталях мероприятия</div>
-            <div>
-                <div>
-                    {question?.map(el => <SelectInput
-                        key={1}
-                        isMulty={el?.allowMiltyAnswer}
-                        question={el?.questionTitle}
-                        changeCallback={(e) => console.log(e)}
-                        options={el?.answers?.map(an => {
-                            return {
-                                value: an,
-                                label: an,
-                            }
-                        })}
-                        /*                        options={[
-                                                    {value: 'chocolate', label: 'Chocolate'},
-                                                    {value: 'strawberry', label: 'Strawberry'},
-                                                    {value: 'vanilla', label: 'Vanilla'},
-                                                ]}*/
-                    />)}
-                </div>
-            </div>
-        </>
-    )
-}
+      <button onClick={onShowModalPress}>show modal</button>
 
-export default Main
+      {modalShown && (
+        <Modal setShown={setModalShown} title={modalTitle}>
+          <ModalChildren
+            setModalShown={setModalShown}
+            {...modalProps}
+            // guestId='646a184200d6d617317b'
+            // groupId='3e4feaa8-c195-48f0-a013-c4aecd711b4e'
+          />
+        </Modal>
+      )}
+    </>
+  );
+};
+
+export default Main;
