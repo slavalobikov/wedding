@@ -1,2 +1,9 @@
 @import './variable';
 @import './mixins';
+
+.icons {
+    display: inline-block;
+    vertical-align: baseline;
+    font-size: 1em;
+    stroke-width: 0;
+}

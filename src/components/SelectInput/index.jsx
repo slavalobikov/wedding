@@ -1,6 +1,6 @@
-import Select from 'react-select'
+import Select from 'react-select';
 
-const SelectInput = ({ options, question, changeCallback, isMulty}) => {
+const SelectInput = ({ options, question, changeCallback, isMulty, ...selectProps }) => {
   return (
     <div>
       {question}
@@ -12,9 +12,10 @@ const SelectInput = ({ options, question, changeCallback, isMulty}) => {
         placeholder={isMulty ? 'Выберите несколько вариантов' : 'Выберите один вариант ответа'}
         isMulti={isMulty}
         options={options}
+        {...selectProps}
       />
     </div>
-  )
-}
+  );
+};
 
 export default SelectInput;
