@@ -5,6 +5,7 @@ import AppwriteService from '../../services/AppwriteService.js';
 import SelectInput from '../../components/SelectInput';
 import { Modal } from '../../components';
 import ModalChildren from './ModalChildren';
+import DownloadQR from '../../components/DownloadQR';
 
 const Main = () => {
   const params = useParams();
@@ -31,7 +32,7 @@ const Main = () => {
   // };
 
   const onShowModalPress = () => {
-    setModalTitle('Редактировать гостя')
+    setModalTitle('Редактировать гостя');
     setModalProps({ guestId: '646a184200d6d617317b' });
     setModalShown(true);
   };
@@ -39,7 +40,6 @@ const Main = () => {
   return (
     <>
       <Header />
-      {/* <button onClick={OnUpdate}>Update</button> */}
       <button onClick={() => AppwriteService.deleteSession()}>delete session</button>
       <div>
         В верхней части страницы находится индивидуальное обращение. Если его нет, то вместо него выводится
@@ -65,8 +65,10 @@ const Main = () => {
           ))}
         </div>
       </div>
-
       <button onClick={onShowModalPress}>show modal</button>
+      <div>
+        <DownloadQR id='dd967318-7c56-41ce-8e00-3cef060880e2' />
+      </div>
 
       {modalShown && (
         <Modal setShown={setModalShown} title={modalTitle}>
