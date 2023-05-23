@@ -67,7 +67,7 @@ const Main = () => {
       </div>
       <button onClick={onShowModalPress}>show modal</button>
       <div>
-        <DownloadQR id='dd967318-7c56-41ce-8e00-3cef060880e2' />
+        <DownloadQR groupId='dd967318-7c56-41ce-8e00-3cef060880e2' />
       </div>
 
       {modalShown && (
