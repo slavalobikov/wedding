@@ -33,7 +33,8 @@ const Main = () => {
 
   const onShowModalPress = () => {
     setModalTitle('Редактировать гостя');
-    setModalProps({ guestId: '646a184200d6d617317b' });
+    setModalProps({ groupId: '98d35343-e055-4421-8660-706ca3e6abeb' });
+    // setModalProps({ guestId: '646a184200d6d617317b' });
     setModalShown(true);
   };
 

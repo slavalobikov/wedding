@@ -20,6 +20,7 @@ const envs = {
     createGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_GROUP_FUNCTION_ID,
     getGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.GET_GUEST_GROUP_FUNCTION_ID,
     updateGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_GUEST_GROUP_FUNCTION_ID,
+    deleteGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.DELETE_GUEST_GROUP_FUNCTION_ID,
   },
 };
 
@@ -93,6 +94,11 @@ class AppwriteService {
         console.log(error); // Failure
       },
     );
+  };
+  static deleteGuestGroup = (data, onPending, onSuccess) => {
+    let promise = () => this.#functions.createExecution(envs.functions.deleteGuestGroupFunctionId, JSON.stringify(data));
+
+    createToast(promise, 'Group deleting...', 'Group deleted!', onPending, onSuccess)
   };
 
   //session

@@ -53,6 +53,12 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
     setPiority(value);
   };
 
+  const onRequestPending = () => setModalOperationLoading(true);
+  const onRequestSuccess = () => {
+    setModalOperationLoading(false);
+    setModalShown(false);
+  };
+
   const onSubmitPress = () => {
     let data = {};
     if (guestId) {
@@ -64,14 +70,11 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
         ? { welcomeText, priority, groupName, guestName: name }
         : { guestName: name, groupId: groups.find((group) => group.groupName === currOption.value).$id };
     }
-    AppwriteService[guestOperation](
-      data,
-      () => setModalOperationLoading(true),
-      () => {
-        setModalOperationLoading(false);
-        setModalShown(false);
-      },
-    );
+    AppwriteService[guestOperation](data, onRequestPending, onRequestSuccess);
+  };
+
+  const onDeletePress = () => {
+    AppwriteService.deleteGuestGroup({ groupId }, onRequestPending, onRequestSuccess);
   };
 
   const options = useMemo(
@@ -108,6 +111,11 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
       <button onClick={onSubmitPress} disabled={modalOperationLoading}>
         {modalOperationLoading ? 'Подождите...' : groupId || guestId ? 'Обновить' : 'Создать'}
       </button>
+      {groupId && (
+        <button onClick={onDeletePress} disabled={modalOperationLoading}>
+          Удалить
+        </button>
+      )}
     </div>
   );
 };
