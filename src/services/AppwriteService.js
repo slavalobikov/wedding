@@ -1,6 +1,7 @@
 import { Client, Account, Databases, ID, Functions } from 'appwrite';
 import config from '../../config.js';
-import { createToast } from '../utils'
+import { createToast } from '../utils';
+import { ROUTES } from '../utils/const';
 
 const envs = {
   baseUrl: config.APPWRITE.BASE_URL,
@@ -48,13 +49,13 @@ class AppwriteService {
   };
   static createGuest = (data, onPending, onSuccess) => {
     const promise = () => this.#functions.createExecution(envs.functions.createGuestFunctionId, JSON.stringify(data));
-    createToast(promise, 'Guest creating...', 'Guest created!', onPending, onSuccess)
+    createToast(promise, 'Guest creating...', 'Guest created!', onPending, onSuccess);
   };
   static updateGuest = ({ guestId, ...data }, onPending, onSuccess) => {
-    const promise = () => this.#databases.updateDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId, data);
-    createToast(promise, 'Guest updating...', 'Guest updated!', onPending, onSuccess)
-  }
-
+    const promise = () =>
+      this.#databases.updateDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId, data);
+    createToast(promise, 'Guest updating...', 'Guest updated!', onPending, onSuccess);
+  };
 
   // groups
   static getGuestGroups = (callback) => {
@@ -74,7 +75,7 @@ class AppwriteService {
 
     promise.then(
       function (response) {
-        callback(JSON.parse(response?.response))
+        callback(JSON.parse(response?.response));
       },
       function (error) {
         console.log(error); // Failure
@@ -95,16 +96,16 @@ class AppwriteService {
   };
 
   //session
-  static createSession = (email, password) => {
+  static createSession = (email, password, navigate) => {
     const promise = this.#account.createEmailSession(email, password);
 
     promise.then(
       function (response) {
         sessionStorage.setItem('_session', JSON.stringify(response));
-        console.log(response);
+        navigate(ROUTES.ADMIN);
       },
       function (error) {
-        console.log('ERR SESSION ', error);
+        return error;
       },
     );
   };
