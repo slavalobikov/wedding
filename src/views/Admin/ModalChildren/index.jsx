@@ -3,14 +3,14 @@ import AppwriteService from '../../../services/AppwriteService';
 import styles from './ModalChildren.module.css';
 import { SelectInput } from '../../../components';
 
-const ModalChildren = ({ setModalShown, guestId, groupId, info }) => {
+const ModalChildren = ({ setModalShown, guestId, groupId }) => {
   const [groups, setGroups] = useState([]);
   const [currOption, setCurrOption] = useState(null);
 
   const [name, setName] = useState('');
-  const [welcomeText, setWelcomeText] = useState(info?.welcomeText);
-  const [priority, setPiority] = useState(info?.priority);
-  const [groupName, setGroupName] = useState(info?.groupName);
+  const [welcomeText, setWelcomeText] = useState('');
+  const [priority, setPiority] = useState('');
+  const [groupName, setGroupName] = useState('');
 
   const [modalOperationLoading, setModalOperationLoading] = useState(false);
 
