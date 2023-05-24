@@ -21,8 +21,7 @@ const DownloadQR = ({ id }) => {
   return (
     <div>
       <div className={classes.qr} ref={qr}>
-        <QRcode value={'https://google.com'} id={id} />
-        {/* <QRcode value={`${window.origin}/${id}`} id={id} /> */}
+        <QRcode value={`${window.origin}/${id}`} id={id} />
       </div>
       <button onClick={generatePDF}>Download pdf</button>
     </div>
