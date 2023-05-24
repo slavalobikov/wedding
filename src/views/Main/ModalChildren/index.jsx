@@ -15,7 +15,7 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
   const [modalOperationLoading, setModalOperationLoading] = useState(false);
 
   useEffect(() => {
-    AppwriteService.getGuestGroups((groups) => setGroups(groups));
+    AppwriteService.getGuestGroups({ groupIds: [] }, (groups) => setGroups(groups));
   }, []);
 
   useEffect(() => {
@@ -28,11 +28,11 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
 
   useEffect(() => {
     if (groupId) {
-      AppwriteService.getGuestGroup({ groupId }, (group) => {
-        setWelcomeText(group.welcomeText);
-        setPiority(group.priority);
-        setGroupName(group.groupName);
-        setCurrOption({ value: group.groupName, label: group.groupName });
+      AppwriteService.getGuestGroups({ groupIds: [groupId] }, (group) => {
+        setWelcomeText(group[0].welcomeText);
+        setPiority(group[0].priority);
+        setGroupName(group[0].groupName);
+        setCurrOption({ value: group[0].groupName, label: group[0].groupName });
       });
     }
   }, [groupId]);
