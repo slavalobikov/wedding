@@ -1,0 +1,18 @@
+@import 'src/style/common';
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: $admin_background;
+
+  .wrapper {
+    min-width: 320px;
+    background: $admin_white;
+    border-radius: 13px;
+    box-shadow: 0 0 15px 8px rgba(0,0,0,.41);
+    width: 30vw;
+    min-height: 300px;
+  }
+}
