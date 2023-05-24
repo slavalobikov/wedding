@@ -1,21 +1,30 @@
 import React, { useRef } from 'react';
 import classes from './downloadQR.module.scss';
-import { QRCodeSVG } from 'qrcode.react';
-import { downloadSvg } from '../../utils/svg';
+import QRcode from 'qrcode.react';
+import { jsPDF } from 'jspdf';
 
-const DownloadQR = ({ groupId }) => {
-  const qrRef = useRef(null);
+const DownloadQR = ({ id }) => {
+  const qr = useRef(null);
 
   const generatePDF = () => {
-    downloadSvg(qrRef.current.firstChild, groupId);
+    let pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: [20, 20],
+    });
+
+    let base64Image = qr?.current?.children?.[0]?.toDataURL();
+    pdf.addImage(base64Image, 'png', 0, 0, 20, 20);
+    pdf.save(`QR_${id}.pdf`);
   };
 
   return (
     <div>
-      <div className={classes.qr} ref={qrRef}>
-        <QRCodeSVG value={`https://wedding-invitation2.vercel.app/${groupId}`} id={groupId} />
+      <div className={classes.qr} ref={qr}>
+        <QRcode value={'https://google.com'} id={id} />
+        {/* <QRcode value={`${window.origin}/${id}`} id={id} /> */}
       </div>
-      <button onClick={generatePDF}>Download svg</button>
+      <button onClick={generatePDF}>Download pdf</button>
     </div>
   );
 };
