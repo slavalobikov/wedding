@@ -64,7 +64,6 @@ class AppwriteService {
 
     promise.then(
       function (response) {
-        console.log(JSON.parse(response?.response));
         callback(JSON.parse(response?.response));
       },
       function (error) {
@@ -105,13 +104,14 @@ class AppwriteService {
       },
     );
   };
-  static deleteSession = () => {
+  static deleteSession = (navigate) => {
     const sessionId = JSON.parse(sessionStorage.getItem('_session')).$id;
     const promise = this.#account.deleteSession(sessionId);
 
     promise.then(
       function (response) {
         sessionStorage.removeItem('_session');
+        navigate(ROUTES.LOGIN);
       },
       function (error) {
         console.log(error); // Failure
