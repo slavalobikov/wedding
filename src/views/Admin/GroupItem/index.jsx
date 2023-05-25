@@ -1,11 +1,9 @@
 import DownloadQR from '../../../components/DownloadQR';
-import Input from '../../../components/Input';
 import { useState } from 'react';
 import { Modal } from '../../../components';
 import ModalChildren from '../ModalChildren';
 
 const GroupItem = ({ info }) => {
-  const [welcomeText, setWelcomeText] = useState(info?.welcomeText);
   const [modalShown, setModalShown] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalProps, setModalProps] = useState(null);
@@ -20,10 +18,6 @@ const GroupItem = ({ info }) => {
     <div>
       {info?.groupName}
       <DownloadQR id={info?.$id} />
-      <div>
-        Welcome text
-        <Input value={welcomeText} onChange={(e) => setWelcomeText(e.currentTarget.value)} />
-      </div>
 
       <button onClick={onShowModalPress}>show modal</button>
 

@@ -50,12 +50,12 @@ class AppwriteService {
   };
   static createGuest = (data, onPending, onSuccess) => {
     const promise = () => this.#functions.createExecution(envs.functions.createGuestFunctionId, JSON.stringify(data));
-    createToast(promise, 'GroupItem creating...', 'GroupItem created!', onPending, onSuccess);
+    createToast(promise, 'Guest creating...', 'Guest created!', onPending, onSuccess);
   };
   static updateGuest = ({ guestId, ...data }, onPending, onSuccess) => {
     const promise = () =>
       this.#databases.updateDocument(envs.guests.databaseId, envs.guests.guestCollectionId, guestId, data);
-    createToast(promise, 'GroupItem updating...', 'GroupItem updated!', onPending, onSuccess);
+    createToast(promise, 'Guest updating...', 'Guest updated!', onPending, onSuccess);
   };
 
   // groups

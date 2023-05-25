@@ -3,9 +3,6 @@ import Header from '../../components/Header';
 import { useParams } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService.js';
 import SelectInput from '../../components/SelectInput';
-import { Modal } from '../../components';
-import ModalChildren from '../Admin/ModalChildren';
-import DownloadQR from '../../components/DownloadQR';
 
 const Main = () => {
   const params = useParams();
