@@ -3,9 +3,17 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import AppwriteService from '../../services/AppwriteService';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { ROUTES } from '../../utils/const';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sessionStorage.getItem('_session')) {
+      navigate(ROUTES.ADMIN);
+    }
+  }, [navigate]);
 
   const onSubmit = (e) => {
     e.preventDefault();
