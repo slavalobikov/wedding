@@ -6,7 +6,7 @@ const Admin = () => {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    AppwriteService.getGuestGroups((res) => setGroups(res));
+    AppwriteService.getGuestGroups({groupIds: []}, (res) => setGroups(res));
   }, []);
 
   return (

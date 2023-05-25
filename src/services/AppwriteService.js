@@ -18,7 +18,7 @@ const envs = {
   functions: {
     createGuestFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_ID,
     createGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_GROUP_FUNCTION_ID,
-    getGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.GET_GUEST_GROUP_FUNCTION_ID,
+    getGuestGroupsFunctionId: config.APPWRITE.FUNCTIONS.GET_GUEST_GROUPS_FUNCTION_ID,
     updateGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_GUEST_GROUP_FUNCTION_ID,
     deleteGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.DELETE_GUEST_GROUP_FUNCTION_ID,
   },
@@ -59,23 +59,12 @@ class AppwriteService {
   };
 
   // groups
-  static getGuestGroups = (callback) => {
-    const promise = this.#databases.listDocuments(envs.guests.databaseId, envs.guests.guestGroupCollectionId);
+  static getGuestGroups = (data, callback) => {
+    let promise = this.#functions.createExecution(envs.functions.getGuestGroupsFunctionId, JSON.stringify(data));
 
     promise.then(
       function (response) {
-        callback(response?.documents);
-      },
-      function (error) {
-        console.log(error); // Failure
-      },
-    );
-  };
-  static getGuestGroup = (data, callback) => {
-    let promise = this.#functions.createExecution(envs.functions.getGuestGroupFunctionId, JSON.stringify(data));
-
-    promise.then(
-      function (response) {
+        console.log(JSON.parse(response?.response));
         callback(JSON.parse(response?.response));
       },
       function (error) {
@@ -96,9 +85,10 @@ class AppwriteService {
     );
   };
   static deleteGuestGroup = (data, onPending, onSuccess) => {
-    let promise = () => this.#functions.createExecution(envs.functions.deleteGuestGroupFunctionId, JSON.stringify(data));
+    let promise = () =>
+      this.#functions.createExecution(envs.functions.deleteGuestGroupFunctionId, JSON.stringify(data));
 
-    createToast(promise, 'Group deleting...', 'Group deleted!', onPending, onSuccess)
+    createToast(promise, 'Group deleting...', 'Group deleted!', onPending, onSuccess);
   };
 
   //session
