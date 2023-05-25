@@ -3,8 +3,7 @@ import AppwriteService from '../../../services/AppwriteService';
 import styles from './ModalChildren.module.css';
 import { SelectInput } from '../../../components';
 
-const ModalChildren = ({ setModalShown, guestId, groupId }) => {
-  const [groups, setGroups] = useState([]);
+const ModalChildren = ({ setModalShown, groups, guestId, groupId }) => {
   const [currOption, setCurrOption] = useState(null);
 
   const [name, setName] = useState('');
@@ -13,10 +12,6 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
   const [groupName, setGroupName] = useState('');
 
   const [modalOperationLoading, setModalOperationLoading] = useState(false);
-
-  useEffect(() => {
-    AppwriteService.getGuestGroups({ groupIds: [] }, (groups) => setGroups(groups));
-  }, []);
 
   useEffect(() => {
     if (guestId) {
@@ -68,7 +63,7 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
     } else {
       data = isNewGroup
         ? { welcomeText, priority, groupName, guestName: name }
-        : { guestName: name, groupId: groups.find((group) => group.groupName === currOption.value).$id };
+        : { guestName: name, groupId: groups?.find((group) => group.groupName === currOption.value).$id };
     }
     AppwriteService[guestOperation](data, onRequestPending, onRequestSuccess);
   };
@@ -79,7 +74,7 @@ const ModalChildren = ({ setModalShown, guestId, groupId }) => {
 
   const options = useMemo(
     () => [
-      ...groups.map((group) => ({ value: group.groupName, label: group.groupName })),
+      ...groups?.map((group) => ({ value: group.groupName, label: group.groupName })),
       { value: 'Создать группу', label: 'Создать группу' },
     ],
     [groups],

@@ -64,7 +64,6 @@ class AppwriteService {
 
     promise.then(
       function (response) {
-        console.log(JSON.parse(response?.response));
         callback(JSON.parse(response?.response));
       },
       function (error) {
