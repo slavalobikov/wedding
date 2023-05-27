@@ -3,7 +3,6 @@ import AppwriteService from '../../services/AppwriteService';
 import editIcon from '../../assets/edit.svg';
 import download from '../../assets/fileDownloadIcon.svg';
 
-import GroupItem from './GroupItem';
 import { useEffect, useState } from 'react';
 import { Modal } from '../../components';
 import ModalChildren from './ModalChildren';
@@ -14,7 +13,7 @@ const Admin = () => {
   const navigate = useNavigate();
 
   const [groups, setGroups] = useState([]);
-  console.log('groups', groups);
+  const [quantityChanges, setQuantityChanges] = useState(0);
 
   const [modalShown, setModalShown] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
@@ -22,7 +21,7 @@ const Admin = () => {
 
   useEffect(() => {
     AppwriteService.getGuestGroups({ groupIds: [] }, (res) => setGroups(res));
-  }, []);
+  }, [quantityChanges]);
 
   const onShowModalPress = ({ groupId, guestId }) => {
     setModalTitle('Редактировать гостя');
@@ -91,6 +90,7 @@ const Admin = () => {
       {modalShown && (
         <Modal setShown={setModalShown} title={modalTitle}>
           <ModalChildren
+            setQuantityChanges={setQuantityChanges}
             setModalShown={setModalShown}
             groups={groups}
             {...modalProps}
