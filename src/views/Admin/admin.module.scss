@@ -1,0 +1,126 @@
+@import 'src/style/common';
+
+.table {
+  border-bottom: 3px solid $blackBorder;
+  border-left: 3px solid $blackBorder;
+  border-right: 3px solid $blackBorder;
+  display: flex;
+  margin: 0 20px;
+
+  &[data-header="true"] {
+    border-top:solid 3px $blackBorder;
+    background: $lightgray;
+    height: 50px;
+
+    & div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  }
+
+  &[data-header="false"] {
+    transition: background-color 0.3s ease-out;
+
+    &:hover {
+      background-color: #f8f7f8;
+  }
+    .table_first {
+
+      .groupName {
+        font-weight: 600;
+        font-size: 18px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        position: relative;
+        cursor: pointer;
+
+        img {
+          display: none;
+          position: absolute;
+          right: 20px;
+          top: 8px;
+        }
+
+        &:hover {
+          color: $lightgray;
+
+          img {
+            display: block;
+          }
+        }
+
+      }
+
+      ol {
+        text-align: left;
+
+        li {
+          cursor: pointer;
+          position: relative;
+
+          img {
+            display: none;
+          }
+
+          &:hover {
+            color: $lightgray;
+
+            img {
+              display: block;
+              position: absolute;
+              right: 20px;
+              top: 0;
+            }
+          }
+
+        }
+      }
+    }
+
+    .table_second {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table_third {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .wrapper {
+        position: relative;
+        width: 100%;
+
+        img {
+          cursor: pointer;
+          position: absolute;
+          top: 8px;
+          right: 20px;
+        }
+      }
+
+    }
+  }
+
+  .table_first {
+    text-align: center;
+    width: 500px;
+    border-right: 3px solid $blackBorder;
+  }
+
+  .table_second {
+    width: 100%;
+    text-align: center;
+    border-right: 3px solid black;
+  }
+
+  .table_third {
+    width: 300px;
+    text-align: center;
+  }
+
+}
