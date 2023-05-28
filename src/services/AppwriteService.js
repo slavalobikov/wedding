@@ -16,11 +16,14 @@ const envs = {
     questionCollectionId: config.APPWRITE.QUESTIONS.COLLECTION_ID,
   },
   functions: {
-    createGuestFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_ID,
+    createGuestFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_FUNCTION_ID,
+
     createGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.CREATE_GUEST_GROUP_FUNCTION_ID,
     getGuestGroupsFunctionId: config.APPWRITE.FUNCTIONS.GET_GUEST_GROUPS_FUNCTION_ID,
     updateGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_GUEST_GROUP_FUNCTION_ID,
     deleteGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.DELETE_GUEST_GROUP_FUNCTION_ID,
+
+    updateQuestionireFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_QUESTIONIRE_FUNCTION_ID,
   },
 };
 
@@ -41,6 +44,7 @@ class AppwriteService {
 
     promise.then(
       function (response) {
+        console.log(response);
         callback(response);
       },
       function (error) {
@@ -71,20 +75,14 @@ class AppwriteService {
       },
     );
   };
-  static updateGuestGroup = (data) => {
-    let promise = this.#functions.createExecution(envs.functions.updateGuestGroupFunctionId, JSON.stringify(data));
+  static updateGuestGroup = (data, onPending, onSuccess) => {
+    const promise = () =>
+      this.#functions.createExecution(envs.functions.updateGuestGroupFunctionId, JSON.stringify(data));
 
-    promise.then(
-      function (response) {
-        console.log(response); // Success
-      },
-      function (error) {
-        console.log(error); // Failure
-      },
-    );
+    createToast(promise, 'Group updating...', 'Group updated!', onPending, onSuccess);
   };
   static deleteGuestGroup = (data, onPending, onSuccess) => {
-    let promise = () =>
+    const promise = () =>
       this.#functions.createExecution(envs.functions.deleteGuestGroupFunctionId, JSON.stringify(data));
 
     createToast(promise, 'Group deleting...', 'Group deleted!', onPending, onSuccess);
@@ -120,6 +118,24 @@ class AppwriteService {
   };
 
   // questions
+  static getQuestionire = (callback) => {
+    const promise = this.#databases.listDocuments(envs.questions.databaseId, envs.questions.questionCollectionId);
+
+    promise.then(
+      function (response) {
+        callback(response?.documents);
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+  };
+  static updateQuestionire = (data) => {
+    const promise = () =>
+      this.#functions.createExecution(envs.functions.updateQuestionireFunctionId, JSON.stringify(data));
+    createToast(promise, 'Questionire updating...', 'Questionire updated!');
+  };
+
   static getQuestions = (callback) => {
     const promise = this.#databases.listDocuments(envs.questions.databaseId, envs.questions.questionCollectionId);
 
@@ -152,11 +168,12 @@ class AppwriteService {
       },
     );
   };
-  static updateQuestion = (questionId) => {
+  static updateQuestion = ({ questionId, ...data }) => {
     const promise = this.#databases.updateDocument(
       envs.questions.databaseId,
       envs.questions.questionCollectionId,
       questionId,
+      data,
     );
 
     promise.then(

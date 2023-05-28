@@ -94,7 +94,7 @@ const ModalChildren = ({ setModalShown, groups, guestId, groupId }) => {
     <div className={styles.container}>
       {!groupId && <input type='text' value={name} onChange={onNameChange} placeholder='Имя гостя' />}
       {!guestId && !groupId && (
-        <SelectInput question='Выберите группу' options={options} changeCallback={setCurrOption} value={currOption} />
+        <SelectInput question='Выберите группу' options={options} onSelectChange={setCurrOption} value={currOption} />
       )}
       {(isNewGroup || groupId) && (
         <div className={styles.container}>
