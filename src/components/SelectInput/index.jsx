@@ -7,7 +7,7 @@ const SelectInput = ({
   style,
   options,
   question,
-  defaultValues,
+  // defaultValues,
   canUpdated,
   onSelectChange,
   onQuestionChange,
@@ -42,7 +42,7 @@ const SelectInput = ({
         hideSelectedOptions={isMulty}
         closeMenuOnSelect={!isMulty}
         blurInputOnSelect={!isMulty}
-        defaultValue={defaultValues}
+        // defaultValue={defaultValues}
         placeholder={isMulty ? 'Выберите несколько вариантов' : 'Выберите один вариант ответа'}
         isMulti={isMulty}
         options={options}

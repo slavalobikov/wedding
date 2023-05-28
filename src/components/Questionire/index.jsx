@@ -7,8 +7,9 @@ import Input from '../Input';
 import Overlay from '../Overlay';
 
 const Questionire = ({ questions: initQuestions, guestId }) => {
-  const [guestValues, setGuestValues] = useState([]);
   const [submitData, setSubmitData] = useState([]);
+
+  const [guestValues, setGuestValues] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [toRemove, setToRemove] = useState([]);
 
@@ -40,7 +41,6 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
       setSubmitData(allAnswers);
     }
   }, [guestId, initQuestions]);
-  console.log('guestValues', guestValues);
 
   const onChange = ({ questionId, questionTitle, answers, allowMultyAnswer }) => {
     setSubmitData((prev) => {
@@ -76,6 +76,20 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
     [guestValues],
   );
 
+  const onSelectChange = useCallback(
+    (e, allowMultyAnswer, questionId) => {
+      const answers = allowMultyAnswer ? e.map((el) => el.value) : [e.value];
+
+      const guestValue = guestValues.find((el) => el.questionId === questionId);
+      setGuestValues((prev) => [
+        ...prev.filter((el) => el.questionId !== questionId),
+        { ...guestValue, options: answers.map((el) => ({ value: el, label: el })) },
+      ]);
+      onChange({ answers, questionId });
+    },
+    [guestValues],
+  );
+
   const onAddMore = () => {
     const $id = `${++questions.length}`;
     const question = {
@@ -103,13 +117,11 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
               <SelectInput
                 isMulty={guestId ? allowMultyAnswer : true}
                 question={questionTitle}
-                onSelectChange={(e) =>
-                  onChange({ answers: allowMultyAnswer ? e.map((el) => el.value) : [e.value], questionId })
-                }
+                onSelectChange={(e) => onSelectChange(e, allowMultyAnswer, questionId)}
                 onQuestionChange={({ target: { value } }) => onChange({ questionTitle: value, questionId })}
                 options={options}
                 canUpdated={!guestId}
-                defaultValues={defaultValues}
+                value={defaultValues}
               />
               {!guestId && (
                 <div className={styles.allowMulti}>
