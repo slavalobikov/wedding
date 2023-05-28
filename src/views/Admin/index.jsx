@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService';
-import GroupItem from './GroupItem';
 import { useEffect, useState } from 'react';
-import { Modal, Questionire } from '../../components';
+import { Icon, Modal, Questionire, DownloadQR } from '../../components';
 import ModalChildren from './ModalChildren';
 import { ROUTES } from '../../utils/const';
+import s from './admin.module.scss';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -37,52 +37,53 @@ const Admin = () => {
   };
 
   return (
-    <div>
-      Admin page
+    <div className={s.container}>
       <button onClick={() => AppwriteService.deleteSession(navigate)}>delete session</button>
-      <div data-header={true} className={s.table}>
-        <div className={s.table_first}>гости</div>
-        <div className={s.table_second}>обращение</div>
-        <div className={s.table_third}>приоритет</div>
-      </div>
-      {groups?.map((el, index) => (
-        <div data-header={false} key={index} className={s.table}>
-          <div className={s.table_first}>
-            <div
-              onClick={() =>
-                onShowModalPress({
-                  groupId: el.$id,
-                })
-              }
-              className={s.groupName}
-            >
-              {el.groupName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
-            </div>
-            <ol>
-              {el?.guests?.map((g, index) => (
-                <li
-                  onClick={() =>
-                    onShowModalPress({
-                      guestId: g.guestId,
-                    })
-                  }
-                  key={index}
-                >
-                  {g?.guestName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
-                </li>
-              ))}
-            </ol>
-          </div>
-          <div className={s.table_second}>{el.welcomeText}</div>
-          <div className={s.table_third}>
-            <div className={s.wrapper}>
-              {el.priority}
-              <DownloadQR groupName={el.groupName} id={el.$id} />
-            </div>
-          </div>
+      <div>
+        <div data-header={true} className={s.table}>
+          <div className={s.table_first}>гости</div>
+          <div className={s.table_second}>обращение</div>
+          <div className={s.table_third}>приоритет</div>
         </div>
-      ))}
-      <button onClick={() => onShowModalPress({ guestId: '647251a8666dc036c33c' })}>show modal</button>
+        {groups?.map((el, index) => (
+          <div data-header={false} key={index} className={s.table}>
+            <div className={s.table_first}>
+              <div
+                onClick={() =>
+                  onShowModalPress({
+                    groupId: el.$id,
+                  })
+                }
+                className={s.groupName}
+              >
+                {el.groupName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
+              </div>
+              <ol>
+                {el?.guests?.map((g, index) => (
+                  <li
+                    onClick={() =>
+                      onShowModalPress({
+                        guestId: g.guestId,
+                      })
+                    }
+                    key={index}
+                  >
+                    {g?.guestName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className={s.table_second}>{el.welcomeText}</div>
+            <div className={s.table_third}>
+              <div className={s.wrapper}>
+                {el.priority}
+                <DownloadQR groupName={el.groupName} id={el.$id} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <Questionire questions={questions} />
       {modalShown && (
         <Modal setShown={setModalShown} title={modalTitle}>
