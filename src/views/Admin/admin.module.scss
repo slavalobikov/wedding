@@ -37,7 +37,7 @@
         position: relative;
         cursor: pointer;
 
-        img {
+        svg {
           display: none;
           position: absolute;
           right: 20px;
@@ -47,7 +47,7 @@
         &:hover {
           color: $lightgray;
 
-          img {
+          svg {
             display: block;
           }
         }
@@ -61,14 +61,14 @@
           cursor: pointer;
           position: relative;
 
-          img {
+          svg {
             display: none;
           }
 
           &:hover {
             color: $lightgray;
 
-            img {
+            svg {
               display: block;
               position: absolute;
               right: 20px;
@@ -95,7 +95,7 @@
         position: relative;
         width: 100%;
 
-        img {
+        svg {
           cursor: pointer;
           position: absolute;
           top: 8px;

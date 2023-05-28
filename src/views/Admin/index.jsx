@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService';
-import editIcon from '../../assets/edit.svg';
-import download from '../../assets/fileDownloadIcon.svg';
 
 import { useEffect, useState } from 'react';
-import { Modal } from '../../components';
+import { Icon, Modal } from '../../components';
 import ModalChildren from './ModalChildren';
 import s from './admin.module.scss';
 import DownloadQR from '../../components/DownloadQR';
@@ -49,7 +47,7 @@ const Admin = () => {
               }
               className={s.groupName}
             >
-              {el.groupName} <img src={editIcon} alt='edit' />
+              {el.groupName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
             </div>
             <ol>
               {el?.guests?.map((g, index) => (
@@ -61,7 +59,7 @@ const Admin = () => {
                   }
                   key={index}
                 >
-                  {g?.guestName} <img src={editIcon} alt='edit' />
+                  {g?.guestName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
                 </li>
               ))}
             </ol>
