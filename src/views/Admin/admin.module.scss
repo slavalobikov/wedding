@@ -1,6 +1,15 @@
 @import 'src/style/common';
 
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: $pink;
+  color: $text-color;
+  gap: 10px;
+}
+
 .table {
+  background-color: $green;
   border-bottom: 3px solid $blackBorder;
   border-left: 3px solid $blackBorder;
   border-right: 3px solid $blackBorder;

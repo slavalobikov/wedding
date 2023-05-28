@@ -11,6 +11,13 @@ const Main = () => {
   const [questions, setQuestions] = useState([]);
   const [guestId, setGuestId] = useState('');
 
+  const [questionireLoading, setQuestionireLoading] = useState(true);
+
+  const options = useMemo(
+    () => group?.guests.map((guest) => ({ value: guest.guestId, label: guest.guestName })),
+    [group],
+  );
+
   useEffect(() => {
     if (id) {
       AppwriteService.getGuestGroups({ groupIds: [id] }, (res) => setGroup(res[0]));
@@ -21,10 +28,16 @@ const Main = () => {
     AppwriteService.getQuestions(setQuestions);
   }, []);
 
-  const options = useMemo(
-    () => group?.guests.map((guest) => ({ value: guest.guestId, label: guest.guestName })),
-    [group],
-  );
+  useEffect(() => {
+    if (options) {
+      setGuestId(options[0].value);
+    }
+  }, [options]);
+
+  const onSelectChange = (value) => {
+    setQuestionireLoading(true);
+    setGuestId(value);
+  };
 
   return (
     <div className={styles.container}>
@@ -41,13 +54,14 @@ const Main = () => {
             style={styles.guestSelect}
             question='Выберите гостя, который заполняет опросник'
             options={options}
-            onSelectChange={({ value }) => setGuestId(value)}
+            onSelectChange={({ value }) => onSelectChange(value)}
+            value={options && (options.find(({ value }) => value === guestId) || options[0])}
           />
-          {!group && <Overlay style={styles.overlay} overlayText='Подождите' />}
+          {!options && !group && <Overlay style={styles.overlay} overlayText='Подождите...' />}
         </div>
         <div className={styles.questionire}>
-          <Questionire questions={questions} guestId={guestId} />
-          {!guestId && <Overlay style={styles.overlay} overlayText='Выберите гостя' />}
+          <Questionire questions={questions} guestId={guestId} overlayCallback={setQuestionireLoading} />
+          {(!guestId || questionireLoading) && <Overlay style={styles.overlay} overlayText='Подождите...' />}
         </div>
         <div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit consequatur iste neque distinctio ex

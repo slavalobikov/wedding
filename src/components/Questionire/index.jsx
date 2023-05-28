@@ -6,12 +6,13 @@ import AppwriteService from '../../services/AppwriteService';
 import Input from '../Input';
 import Overlay from '../Overlay';
 
-const Questionire = ({ questions: initQuestions, guestId }) => {
+const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => {
+  const [questions, setQuestions] = useState([]);
+  const [toRemove, setToRemove] = useState([]);
   const [submitData, setSubmitData] = useState([]);
 
   const [guestValues, setGuestValues] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [toRemove, setToRemove] = useState([]);
+  const [globalValues, setGlobalValues] = useState([]);
 
   useEffect(() => {
     setQuestions([...initQuestions]);
@@ -20,8 +21,9 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
   useEffect(() => {
     if (guestId) {
       setGuestValues([]);
+      setGlobalValues([]);
       setSubmitData([]);
-      AppwriteService.getGuest(guestId, (guest) =>
+      AppwriteService.getGuest(guestId, (guest) => {
         guest.answers.forEach((answer) => {
           const { questionId, questionTitle, answers } = JSON.parse(answer);
           const allowMultyAnswer = initQuestions.find((question) => question.$id === questionId)?.allowMultyAnswer;
@@ -31,13 +33,18 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
             ...prev.filter((el) => el.questionId !== questionId),
             { questionId, questionTitle, answers, allowMultyAnswer },
           ]);
-        }),
-      );
+        });
+        overlayCallback && overlayCallback(false);
+      });
     } else {
       const allAnswers = [];
-      initQuestions?.forEach(({ answers, $id: questionId, questionTitle, allowMultyAnswer }) =>
-        allAnswers.push({ answers, questionId, questionTitle, allowMultyAnswer }),
-      );
+      initQuestions?.forEach(({ answers, $id: questionId, questionTitle, allowMultyAnswer }) => {
+        allAnswers.push({ answers, questionId, questionTitle, allowMultyAnswer });
+        setGlobalValues((prev) => [
+          ...prev.filter((el) => el.questionId !== questionId),
+          { questionId, options: answers.map((el) => ({ value: el, label: el })) },
+        ]);
+      });
       setSubmitData(allAnswers);
     }
   }, [guestId, initQuestions]);
@@ -76,18 +83,26 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
     [guestValues],
   );
 
+  const getGlobalOptions = useCallback(
+    (questionId) => globalValues.find((el) => el.questionId === questionId)?.options,
+    [globalValues],
+  );
+
   const onSelectChange = useCallback(
-    (e, allowMultyAnswer, questionId) => {
+    (e, allowMultyAnswer, questionId, isGuest) => {
       const answers = allowMultyAnswer ? e.map((el) => el.value) : [e.value];
 
-      const guestValue = guestValues.find((el) => el.questionId === questionId);
-      setGuestValues((prev) => [
+      const value = [...(isGuest ? guestValues : globalValues)].find((el) => el.questionId === questionId);
+      const setCallback = (data) => (isGuest ? setGuestValues(data) : setGlobalValues(data));
+
+      setCallback((prev) => [
         ...prev.filter((el) => el.questionId !== questionId),
-        { ...guestValue, options: answers.map((el) => ({ value: el, label: el })) },
+        { ...value, options: answers.map((el) => ({ value: el, label: el })) },
       ]);
+
       onChange({ answers, questionId });
     },
-    [guestValues],
+    [guestValues, globalValues],
   );
 
   const onAddMore = () => {
@@ -105,7 +120,7 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
     <div className={styles.container}>
       {questions?.map(({ $id: questionId, allowMultyAnswer, answers, questionTitle }, index) => {
         const options = answers.map((answer) => ({ value: answer, label: answer }));
-        const defaultValues = guestId ? getGuestOptions(questionId) : options;
+        const values = guestId ? getGuestOptions(questionId) : getGlobalOptions(questionId);
         return (
           <>
             <div key={questionId} className={styles.question}>
@@ -117,11 +132,11 @@ const Questionire = ({ questions: initQuestions, guestId }) => {
               <SelectInput
                 isMulty={guestId ? allowMultyAnswer : true}
                 question={questionTitle}
-                onSelectChange={(e) => onSelectChange(e, allowMultyAnswer, questionId)}
+                onSelectChange={(e) => onSelectChange(e, allowMultyAnswer, questionId, !!guestId)}
                 onQuestionChange={({ target: { value } }) => onChange({ questionTitle: value, questionId })}
                 options={options}
                 canUpdated={!guestId}
-                value={defaultValues}
+                value={values}
               />
               {!guestId && (
                 <div className={styles.allowMulti}>
