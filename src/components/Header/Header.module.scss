@@ -1,5 +1,18 @@
+@import '../../style/variable.scss';
+
 .header {
-  border: solid 3px red;
   display: flex;
   justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  padding: 0 5vw;
+  color: rgb(52, 53, 31);
+  background-color: rgba(91, 93, 54, 0.5);
+  backdrop-filter: blur(2px);
+  box-shadow: 0px 10px 150px 24px rgba(91, 93, 54, 0.75);
+  z-index: 999;
+  font-weight: 900;
+  font-size: 26px;
 }

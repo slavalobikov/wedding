@@ -1,0 +1,19 @@
+@import '../../style/variable';
+
+.overlay {
+    display: flex;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: $text-color;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
