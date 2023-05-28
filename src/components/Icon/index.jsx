@@ -8,6 +8,6 @@ const Icon = ({ iconName, iconWidth, iconHeight, fill }) => {
       <use xlinkHref={`${spriteIcons}#${iconName}`} />
     </svg>
   );
-}
+};
 
 export default Icon;

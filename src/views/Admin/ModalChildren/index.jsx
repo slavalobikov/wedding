@@ -3,7 +3,7 @@ import AppwriteService from '../../../services/AppwriteService';
 import styles from './ModalChildren.module.css';
 import { SelectInput } from '../../../components';
 
-const ModalChildren = ({ setModalShown, groups, guestId, groupId }) => {
+const ModalChildren = ({ setModalShown, groups, guestId, groupId, setQuantityChanges }) => {
   const [currOption, setCurrOption] = useState(null);
 
   const [name, setName] = useState('');
@@ -52,6 +52,7 @@ const ModalChildren = ({ setModalShown, groups, guestId, groupId }) => {
   const onRequestSuccess = () => {
     setModalOperationLoading(false);
     setModalShown(false);
+    //setQuantityChanges((prev) => prev + 1);
   };
 
   const onSubmitPress = () => {

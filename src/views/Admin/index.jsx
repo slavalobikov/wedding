@@ -40,8 +40,47 @@ const Admin = () => {
     <div>
       Admin page
       <button onClick={() => AppwriteService.deleteSession(navigate)}>delete session</button>
-      {groups?.map((el) => (
-        <GroupItem key={el.$id} info={el} />
+      <div data-header={true} className={s.table}>
+        <div className={s.table_first}>гости</div>
+        <div className={s.table_second}>обращение</div>
+        <div className={s.table_third}>приоритет</div>
+      </div>
+      {groups?.map((el, index) => (
+        <div data-header={false} key={index} className={s.table}>
+          <div className={s.table_first}>
+            <div
+              onClick={() =>
+                onShowModalPress({
+                  groupId: el.$id,
+                })
+              }
+              className={s.groupName}
+            >
+              {el.groupName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
+            </div>
+            <ol>
+              {el?.guests?.map((g, index) => (
+                <li
+                  onClick={() =>
+                    onShowModalPress({
+                      guestId: g.guestId,
+                    })
+                  }
+                  key={index}
+                >
+                  {g?.guestName} <Icon iconName={'edit'} iconWidth={12} iconHeight={15} />
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className={s.table_second}>{el.welcomeText}</div>
+          <div className={s.table_third}>
+            <div className={s.wrapper}>
+              {el.priority}
+              <DownloadQR groupName={el.groupName} id={el.$id} />
+            </div>
+          </div>
+        </div>
       ))}
       <button onClick={() => onShowModalPress({ guestId: '647251a8666dc036c33c' })}>show modal</button>
       <Questionire questions={questions} />

@@ -2,8 +2,9 @@ import React, { useRef } from 'react';
 import classes from './downloadQR.module.scss';
 import QRcode from 'qrcode.react';
 import { jsPDF } from 'jspdf';
+import Icon from '../Icon';
 
-const DownloadQR = ({ id }) => {
+const DownloadQR = ({ id, groupName }) => {
   const qr = useRef(null);
 
   const generatePDF = () => {
@@ -15,7 +16,7 @@ const DownloadQR = ({ id }) => {
 
     let base64Image = qr?.current?.children?.[0]?.toDataURL();
     pdf.addImage(base64Image, 'png', 0, 0, 20, 20);
-    pdf.save(`QR_${id}.pdf`);
+    pdf.save(`QR_${groupName}_${id}.pdf`);
   };
 
   return (
@@ -23,7 +24,9 @@ const DownloadQR = ({ id }) => {
       <div className={classes.qr} ref={qr}>
         <QRcode value={`${window.origin}/${id}`} id={id} />
       </div>
-      <button onClick={generatePDF}>Download pdf</button>
+      <div onClick={() => generatePDF()}>
+        <Icon iconName='download' iconHeight={12} iconWidth={15} />
+      </div>
     </div>
   );
 };
