@@ -1,0 +1,10 @@
+@import '../../style/variable';
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.question {
+    margin-bottom: 4px;
+}

@@ -1,25 +1,34 @@
 import { useNavigate } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService';
-
+import GroupItem from './GroupItem';
 import { useEffect, useState } from 'react';
-import { Icon, Modal } from '../../components';
+import { Modal, Questionire } from '../../components';
 import ModalChildren from './ModalChildren';
-import s from './admin.module.scss';
-import DownloadQR from '../../components/DownloadQR';
+import { ROUTES } from '../../utils/const';
 
 const Admin = () => {
   const navigate = useNavigate();
 
   const [groups, setGroups] = useState([]);
-  const [quantityChanges, setQuantityChanges] = useState(0);
+  const [questions, setQuestions] = useState([]);
 
   const [modalShown, setModalShown] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalProps, setModalProps] = useState(null);
 
   useEffect(() => {
+    if (!sessionStorage.getItem('_session')) {
+      navigate(ROUTES.LOGIN);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     AppwriteService.getGuestGroups({ groupIds: [] }, (res) => setGroups(res));
-  }, [quantityChanges]);
+  }, []);
+
+  useEffect(() => {
+    AppwriteService.getQuestions(setQuestions);
+  }, []);
 
   const onShowModalPress = ({ groupId, guestId }) => {
     setModalTitle('Редактировать гостя');
@@ -73,22 +82,11 @@ const Admin = () => {
           </div>
         </div>
       ))}
-      {/*{groups?.map((el, index) => (
-          <GroupItem key={index} info={el} />
-        ))}*/}
-      <button
-        onClick={() =>
-          onShowModalPress({
-            /*{ groupId: 'dd967318-7c56-41ce-8e00-3cef060880e2' }*/
-          })
-        }
-      >
-        show modal
-      </button>
+      <button onClick={() => onShowModalPress({ guestId: '647251a8666dc036c33c' })}>show modal</button>
+      <Questionire questions={questions} />
       {modalShown && (
         <Modal setShown={setModalShown} title={modalTitle}>
           <ModalChildren
-            setQuantityChanges={setQuantityChanges}
             setModalShown={setModalShown}
             groups={groups}
             {...modalProps}
