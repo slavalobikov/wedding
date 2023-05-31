@@ -7,7 +7,6 @@ const SelectInput = ({
   style,
   options,
   question,
-  // defaultValues,
   canUpdated,
   onSelectChange,
   onQuestionChange,
@@ -26,10 +25,16 @@ const SelectInput = ({
           borderRadius: 16,
           colors: {
             ...theme.colors,
+            primary: '#9D8189',
             primary25: '#D8E2DC',
             neutral20: '#D8E2DC',
             neutral50: '#9D8189',
             neutral60: '#D8E2DC',
+            neutral80: '#9D8189',
+            danger: '#F4ACB7',
+            dangerLight: '#D8E2DC',
+            primary50: '#FFE5D9',
+            neutral10: '#FFE5D9',
           },
         })}
         styles={{
@@ -42,7 +47,6 @@ const SelectInput = ({
         hideSelectedOptions={isMulty}
         closeMenuOnSelect={!isMulty}
         blurInputOnSelect={!isMulty}
-        // defaultValue={defaultValues}
         placeholder={isMulty ? 'Выберите несколько вариантов' : 'Выберите один вариант ответа'}
         isMulti={isMulty}
         options={options}

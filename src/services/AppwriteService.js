@@ -32,7 +32,7 @@ class AppwriteService {
   static #account = new Account(this.#client);
   static #databases = new Databases(this.#client);
   static #functions = new Functions(this.#client);
-
+  
   // init
   static init = () => {
     this.#client.setEndpoint(envs.baseUrl).setProject(envs.projectId);

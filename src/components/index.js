@@ -4,5 +4,6 @@ import SelectInput from './SelectInput';
 import Questionire from './Questionire';
 import Overlay from './Overlay';
 import DownloadQR from './DownloadQR';
+import Button from './Button';
 
-export { Modal, Icon, SelectInput, Questionire, Overlay, DownloadQR };
+export { Modal, Icon, SelectInput, Questionire, Overlay, DownloadQR, Button };
