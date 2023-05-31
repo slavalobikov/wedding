@@ -1,0 +1,19 @@
+@import '../../style/_common.scss';
+
+.button {
+    border-radius: 16px;
+    background-color: $skin;
+    color: $text-color;
+    outline: none;
+
+    &:hover {
+        border-color: $pink;
+    }
+    &:focus {
+        outline: none;
+    }
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}

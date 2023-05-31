@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import SelectInput from '../SelectInput';
 import Icon from '../Icon';
 import styles from './Questionire.module.scss';
 import AppwriteService from '../../services/AppwriteService';
 import Input from '../Input';
 import Overlay from '../Overlay';
+import Button from '../Button';
+import { arrayEquals } from '../../utils';
 
 const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => {
   const [questions, setQuestions] = useState([]);
@@ -12,7 +14,9 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
   const [submitData, setSubmitData] = useState([]);
 
   const [guestValues, setGuestValues] = useState([]);
+  const [initGuestValues, setinitGuestValues] = useState([]);
   const [globalValues, setGlobalValues] = useState([]);
+  const [initGlobalValues, setInitGlobalValues] = useState([]);
 
   useEffect(() => {
     setQuestions([...initQuestions]);
@@ -22,11 +26,18 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
     if (guestId) {
       setGuestValues([]);
       setGlobalValues([]);
+      setinitGuestValues([]);
+      setInitGlobalValues([]);
       setSubmitData([]);
       AppwriteService.getGuest(guestId, (guest) => {
         guest.answers.forEach((answer) => {
           const { questionId, questionTitle, answers } = JSON.parse(answer);
           const allowMultyAnswer = initQuestions.find((question) => question.$id === questionId)?.allowMultyAnswer;
+
+          setinitGuestValues((prev) => [
+            ...prev,
+            { questionId, options: answers.map((el) => ({ value: el, label: el })) },
+          ]);
 
           setGuestValues((prev) => [...prev, { questionId, options: answers.map((el) => ({ value: el, label: el })) }]);
           setSubmitData((prev) => [
@@ -41,6 +52,11 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
       initQuestions?.forEach(({ answers, $id: questionId, questionTitle, allowMultyAnswer }) => {
         allAnswers.push({ answers, questionId, questionTitle, allowMultyAnswer });
         setGlobalValues((prev) => [
+          ...prev.filter((el) => el.questionId !== questionId),
+          { questionId, options: answers.map((el) => ({ value: el, label: el })) },
+        ]);
+
+        setInitGlobalValues((prev) => [
           ...prev.filter((el) => el.questionId !== questionId),
           { questionId, options: answers.map((el) => ({ value: el, label: el })) },
         ]);
@@ -116,6 +132,20 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
     setQuestions((prev) => [...prev, question].filter((el) => !!el));
   };
 
+  const submitDisabled = useMemo(() => {
+    const initValues = guestId ? [...initGuestValues] : [...initGlobalValues];
+    const values = guestId ? [...guestValues] : [...globalValues];
+
+    return (
+      values.some((value) => value.options.length === 0) ||
+      initValues.every(({ questionId, options: initOptions }) => {
+        const options = values.find((value) => value.questionId === questionId)?.options;
+
+        return arrayEquals(initOptions, options);
+      })
+    );
+  }, [guestId, initGuestValues, guestValues, initGlobalValues, globalValues]);
+
   return (
     <div className={styles.container}>
       {questions?.map(({ $id: questionId, allowMultyAnswer, answers, questionTitle }, index) => {
@@ -168,9 +198,7 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
           <p>Добавить вопрос</p>
         </div>
       )}
-      <button onClick={onSubmit} className={styles.submit}>
-        Сохранить
-      </button>
+      <Button text='Сохранить' style={styles.submit} onClick={onSubmit} disabled={submitDisabled} />
     </div>
   );
 };
