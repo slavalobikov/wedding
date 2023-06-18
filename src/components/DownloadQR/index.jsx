@@ -38,7 +38,7 @@ const DownloadQR = ({ id, groupName }) => {
   return (
     <div>
       <div className={classes.qr} ref={qr}>
-        <QRcode value={shortenedUrl} id={id} />
+        <QRcode value={shortenedUrl} />
       </div>
       <div onClick={generatePDF}>
         <Icon iconName='download' iconHeight={12} iconWidth={15} />
