@@ -1,14 +1,13 @@
 .timer {
   display: flex;
   text-align: center;
-  width: 400px;
+  width: 100vw;
 
-  .col_4 {
-    width: 25%;
-    float: left;
-
-    .box {
-      font-weight: 300;
+  .col {
+    width: 25vw;
+    .text {
+      font-weight: 400;
+      font-size: 18px;
     }
   }
 }

@@ -6,6 +6,7 @@ import styles from './SelectInput.module.scss';
 const SelectInput = ({
   style,
   options,
+  disabledOptions,
   question,
   canUpdated,
   onSelectChange,
@@ -50,6 +51,7 @@ const SelectInput = ({
         placeholder={isMulty ? 'Выберите несколько вариантов' : 'Выберите один вариант ответа'}
         isMulti={isMulty}
         options={options}
+        isOptionDisabled={(option) => disabledOptions?.length && disabledOptions.includes(option.value)}
         {...selectProps}
       />
     </div>

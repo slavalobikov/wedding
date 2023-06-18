@@ -25,9 +25,9 @@ const Login = () => {
     <div className={s.login}>
       <div className={s.wrapper}>
         <form onSubmit={onSubmit}>
-          <Input name='login' />
-          <Input name='password' type='password' />
-          <Button />
+          <Input name='login' placeholder='login' />
+          <Input name='password' type='password' placeholder='password' />
+          <Button text='Log In' />
         </form>
       </div>
     </div>
