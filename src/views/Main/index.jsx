@@ -6,7 +6,7 @@ import styles from './main.module.scss';
 import { Overlay, Questionire, SelectInput } from '../../components';
 
 const Main = () => {
-  const { id = '8505667d-f92e-4f29-8b64-27264e95e737' } = useParams();
+  const { id } = useParams();
   const [group, setGroup] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [guestId, setGuestId] = useState('');
@@ -43,6 +43,7 @@ const Main = () => {
     <div className={styles.container}>
       <div className={styles.main}>
         <Header />
+        <div>{group?.welcomeText}</div>
         <div>
           В верхней части страницы находится индивидуальное обращение. Если его нет, то вместо него выводится
           “Дорогой/ая/ие” и имя/имена гостя/гостей. Первая часть обращения выводится в зависимости от пола гостя
@@ -56,6 +57,7 @@ const Main = () => {
             options={options}
             onSelectChange={({ value }) => onSelectChange(value)}
             value={options && (options.find(({ value }) => value === guestId) || options[0])}
+            disabledOptions={[guestId]}
           />
           {!options && !group && <Overlay style={styles.overlay} overlayText='Подождите...' />}
         </div>

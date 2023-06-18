@@ -65,27 +65,30 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
     }
   }, [guestId, initQuestions]);
 
-  const onChange = ({ questionId, questionTitle, answers, allowMultyAnswer }) => {
-    setSubmitData((prev) => {
-      const {
-        questionTitle: resQuestionTitle,
-        allowMultyAnswer: resAllowMultyAnswer,
-        answers: resAnswers,
-      } = guestId ? questions.find((el) => el.$id === questionId) : prev?.find((el) => el.questionId === questionId);
-      const initTitle = resQuestionTitle;
-      const initAllowMulti = resAllowMultyAnswer;
-      const initAnswers = resAnswers;
+  const onChange = useCallback(
+    ({ questionId, questionTitle, answers, allowMultyAnswer }) => {
+      setSubmitData((prev) => {
+        const {
+          questionTitle: resQuestionTitle,
+          allowMultyAnswer: resAllowMultyAnswer,
+          answers: resAnswers,
+        } = questions.find((el) => el.$id === questionId);
+        const initTitle = resQuestionTitle;
+        const initAllowMulti = resAllowMultyAnswer;
+        const initAnswers = resAnswers;
 
-      const data = {
-        questionTitle: questionTitle || initTitle,
-        allowMultyAnswer: allowMultyAnswer !== undefined ? allowMultyAnswer : initAllowMulti,
-        answers: answers?.length ? answers : initAnswers,
-        questionId,
-      };
+        const data = {
+          questionTitle: questionTitle || initTitle,
+          allowMultyAnswer: allowMultyAnswer !== undefined ? allowMultyAnswer : initAllowMulti,
+          answers: answers?.length ? answers : initAnswers,
+          questionId,
+        };
 
-      return [...prev.filter((el) => el.questionId !== questionId), data];
-    });
-  };
+        return [...prev.filter((el) => el.questionId !== questionId), data];
+      });
+    },
+    [questions],
+  );
 
   const onSubmit = () => {
     AppwriteService.updateQuestionire({
@@ -106,7 +109,7 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
 
   const onSelectChange = useCallback(
     (e, allowMultyAnswer, questionId, isGuest) => {
-      const answers = allowMultyAnswer ? e.map((el) => el.value) : [e.value];
+      const answers = !guestId || allowMultyAnswer ? e.map((el) => el.value) : [e.value];
 
       const value = [...(isGuest ? guestValues : globalValues)].find((el) => el.questionId === questionId);
       const setCallback = (data) => (isGuest ? setGuestValues(data) : setGlobalValues(data));
@@ -129,7 +132,11 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
       allowMultyAnswer: true,
       answers: ['Новый ответ 1'],
     };
-    setQuestions((prev) => [...prev, question].filter((el) => !!el));
+    setQuestions((prev) => [...prev, { ...question }].filter((el) => !!el));
+    setGlobalValues((prev) => [
+      ...prev,
+      { questionId: question.$id, options: question.answers.map((el) => ({ value: el, label: el })) },
+    ]);
   };
 
   const submitDisabled = useMemo(() => {
@@ -137,14 +144,15 @@ const Questionire = ({ questions: initQuestions, guestId, overlayCallback }) => 
     const values = guestId ? [...guestValues] : [...globalValues];
 
     return (
-      values.some((value) => value.options.length === 0) ||
+      initValues.length === values.length &&
+      !toRemove.length &&
       initValues.every(({ questionId, options: initOptions }) => {
         const options = values.find((value) => value.questionId === questionId)?.options;
 
-        return arrayEquals(initOptions, options);
+        return !options.length || arrayEquals(initOptions, options);
       })
     );
-  }, [guestId, initGuestValues, guestValues, initGlobalValues, globalValues]);
+  }, [guestId, initGuestValues, guestValues, initGlobalValues, globalValues, toRemove]);
 
   return (
     <div className={styles.container}>

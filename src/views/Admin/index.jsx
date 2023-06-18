@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService';
 import { useEffect, useState } from 'react';
-import { Icon, Modal, Questionire, DownloadQR } from '../../components';
+import { Icon, Modal, Questionire, DownloadQR, Button } from '../../components';
 import ModalChildren from './ModalChildren';
 import { ROUTES } from '../../utils/const';
 import s from './admin.module.scss';
@@ -30,8 +30,8 @@ const Admin = () => {
     AppwriteService.getQuestions(setQuestions);
   }, []);
 
-  const onShowModalPress = ({ groupId, guestId }) => {
-    setModalTitle('Редактировать гостя');
+  const onShowModalPress = ({ groupId, guestId, modalTitle }) => {
+    setModalTitle(modalTitle);
     setModalProps({ groupId, guestId });
     setModalShown(true);
   };
@@ -52,6 +52,7 @@ const Admin = () => {
                 onClick={() =>
                   onShowModalPress({
                     groupId: el.$id,
+                    modalTitle: 'Редактировать группу',
                   })
                 }
                 className={s.groupName}
@@ -64,6 +65,7 @@ const Admin = () => {
                     onClick={() =>
                       onShowModalPress({
                         guestId: g.guestId,
+                        modalTitle: 'Редактировать гостя',
                       })
                     }
                     key={index}
@@ -82,6 +84,7 @@ const Admin = () => {
             </div>
           </div>
         ))}
+        <Button text='Добавить гостя' icon='plus' onClick={() => onShowModalPress({ modalTitle: 'Создать гостя' })} />
       </div>
 
       <Questionire questions={questions} />
