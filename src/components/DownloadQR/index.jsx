@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './downloadQR.module.scss';
 import QRcode from 'qrcode.react';
 import { jsPDF } from 'jspdf';
@@ -9,19 +9,19 @@ const DownloadQR = ({ id, groupName }) => {
 
   const [shortenedUrl, setShortenedUrl] = useState('');
 
-  useEffect(() => {
-    const shortenUrl = async () => {
-      try {
-        const response = await fetch(`https://api.shrtco.de/v2/shorten?url=${window.origin}/${id}`);
-        const data = await response.json();
-        setShortenedUrl(data.result.full_short_link);
-      } catch (e) {
-        console.log('e', e);
-      }
-    };
-
-    shortenUrl();
+  const shortenUrl = useCallback(async () => {
+    try {
+      const response = await fetch(`https://api.shrtco.de/v2/shorten?url=${window.origin}/${id}`);
+      const data = await response.json();
+      setShortenedUrl(data.result.full_short_link);
+    } catch (e) {
+      console.log('e', e);
+    }
   }, [id]);
+
+  useEffect(() => {
+    shortenUrl();
+  }, [shortenUrl]);
 
   const generatePDF = () => {
     let pdf = new jsPDF({
