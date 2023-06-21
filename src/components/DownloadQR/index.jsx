@@ -13,14 +13,14 @@ const DownloadQR = ({ id, groupName }) => {
     try {
       const response = await fetch(`https://api.shrtco.de/v2/shorten?url=${window.origin}/${id}`);
       const data = await response.json();
-      setShortenedUrl(data.result.full_short_link);
+      return data.result.full_short_link;
     } catch (e) {
       console.log('e', e);
     }
   }, [id]);
 
   useEffect(() => {
-    shortenUrl();
+    shortenUrl().then(url => setShortenedUrl(url));
   }, [shortenUrl]);
 
   const generatePDF = () => {
@@ -31,7 +31,7 @@ const DownloadQR = ({ id, groupName }) => {
     });
 
     let base64Image = qr?.current?.children?.[0]?.toDataURL();
-    pdf.addImage(base64Image, 'png', 0, 0, 20, 20);
+    pdf.addImage(base64Image, 'jpeg', 0, 0, 20, 20);
     pdf.save(`QR_${groupName}_${id}.pdf`);
   };
 
