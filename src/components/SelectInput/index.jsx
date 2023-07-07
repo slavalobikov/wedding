@@ -52,6 +52,9 @@ const SelectInput = ({
         isMulti={isMulty}
         options={options}
         isOptionDisabled={(option) => disabledOptions?.length && disabledOptions.includes(option.value)}
+        isSearchable={false}
+        readOnly={true}
+        inputFocusOnClick={false}
         {...selectProps}
       />
     </div>
