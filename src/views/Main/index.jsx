@@ -3,7 +3,7 @@ import Header from '../../components/Header';
 import { useParams } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService.js';
 import styles from './main.module.scss';
-import { Overlay, Questionire, SelectInput } from '../../components';
+import { ColorSchema, Overlay, Questionire, SelectInput } from '../../components';
 
 const Main = () => {
   const { id } = useParams();
@@ -95,13 +95,7 @@ const Main = () => {
           Вся информация о трансфере и размещении будет предоставлена индивидуально не позднее 7 дней до свадьбы
           <br />
           <br />
-          <div>
-            <p>Для облегчения выбора нарядов ниже представлена цветовая палитра свадьбы</p>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <div style={{ backgroundColor: 'green', width: '20px', height: '20px', borderRadius: '10px' }} />
-              <div style={{ backgroundColor: 'red', width: '20px', height: '20px', borderRadius: '10px' }} />
-            </div>
-          </div>
+          <ColorSchema />
           <br />
           Дресс-код для мужчин: классический
           <br />
@@ -112,12 +106,11 @@ const Main = () => {
           будет задействована в интерактиве
           <br />
           <br />
-          Просим подтвердить {group?.appeal?.[3] || 'ваше'} присутствие любым удобным {group?.appeal?.[2] || 'вам'} способом
-          не позднее 05.08.2023
+          Просим подтвердить {group?.appeal?.[3] || 'ваше'} присутствие любым удобным {group?.appeal?.[2] || 'вам'}{' '}
+          способом не позднее 05.08.2023
           <br />
           <br />
-          Наш координатор с удовольствием ответит на любые
-          вопросы, которые могут возникнуть в день свадьбы
+          Наш координатор с удовольствием ответит на любые вопросы, которые могут возникнуть в день свадьбы
           <br />
           <br />
           <a href='tel:+375293130356' style={{ textDecoration: 'underline', color: '#9D8189' }}>
