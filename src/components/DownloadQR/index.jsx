@@ -9,19 +9,18 @@ const DownloadQR = ({ id, groupName }) => {
 
   const [shortenedUrl, setShortenedUrl] = useState('');
 
-  const shortenUrl = useCallback(async () => {
-    try {
-      const response = await fetch(`https://api.shrtco.de/v2/shorten?url=${window.origin}/${id}`);
-      const data = await response.json();
-      return data.result.full_short_link;
-    } catch (e) {
-      console.log('e', e);
-    }
+  const shortenUrl = useCallback(() => {
+    fetch(`https://api.shrtco.de/v2/shorten?url=https://wedding-invitation2.vercel.app/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data);
+        setShortenedUrl(data.result.full_short_link);
+      });
   }, [id]);
 
   useEffect(() => {
-    shortenUrl().then(url => setShortenedUrl(url));
-  }, [shortenUrl]);
+    !shortenedUrl && shortenUrl();
+  }, [shortenUrl, shortenedUrl]);
 
   const generatePDF = () => {
     let pdf = new jsPDF({
@@ -38,7 +37,7 @@ const DownloadQR = ({ id, groupName }) => {
   return (
     <div>
       <div className={classes.qr} ref={qr}>
-        <QRcode value={shortenedUrl} />
+        <QRcode value={"https://shrtco.de/aAqRMH"} />
       </div>
       <div onClick={generatePDF}>
         <Icon iconName='download' iconHeight={12} iconWidth={15} />
