@@ -1,0 +1,73 @@
+@import '../../style/_variable.scss';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: $green;
+    border-radius: 16px;
+    padding: 8px;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.statistic {
+    background-color: $skin;
+    border-radius: 16px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.statisticHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.arrow {
+    transition: .2s ease-in;
+}
+
+.arrow::before {
+    border-style: solid;
+    border-width: 0.15em 0.15em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.9em;
+    left: 0.3em;
+    top: 0.3em;
+    vertical-align: top;
+    width: 0.9em;
+    transform: rotate(135deg);
+}
+
+.up {
+    transform: rotate(-180deg); 
+}
+
+.statisticContent {
+    display: none;
+
+    &__shown {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+.answer {
+    border-radius: 16px;
+    padding: 8px;
+    &:hover {
+        background-color: $pink;
+    }
+}
+
+.devider {
+    width: 100%;
+    border-top: 1px solid $text-color;
+}

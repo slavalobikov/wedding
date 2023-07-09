@@ -24,6 +24,8 @@ const envs = {
     deleteGuestGroupFunctionId: config.APPWRITE.FUNCTIONS.DELETE_GUEST_GROUP_FUNCTION_ID,
 
     updateQuestionireFunctionId: config.APPWRITE.FUNCTIONS.UPDATE_QUESTIONIRE_FUNCTION_ID,
+
+    getStatisticsFunctionId: config.APPWRITE.FUNCTIONS.GET_STATISTICS_FUNCTION_ID,
   },
 };
 
@@ -201,6 +203,19 @@ class AppwriteService {
       },
     );
   };
+
+  static getStatistics = (callback) => {
+    let promise = this.#functions.createExecution(envs.functions.getStatisticsFunctionId);
+
+    promise.then(
+      function (response) {
+        callback(JSON.parse(response?.response));
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+  }
 }
 
 export default AppwriteService;

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import AppwriteService from '../../services/AppwriteService';
 import { useEffect, useState } from 'react';
-import { Icon, Modal, Questionire, DownloadQR, Button } from '../../components';
+import { Icon, Modal, Questionire, DownloadQR, Button, Statistics } from '../../components';
 import ModalChildren from './ModalChildren';
 import { ROUTES } from '../../utils/const';
 import s from './admin.module.scss';
@@ -11,6 +11,8 @@ const Admin = () => {
 
   const [groups, setGroups] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [statistics, setStatistics] = useState([]);
+  console.log('STATISTICS ', statistics);
 
   const [modalShown, setModalShown] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
@@ -28,6 +30,10 @@ const Admin = () => {
 
   useEffect(() => {
     AppwriteService.getQuestions(setQuestions);
+  }, []);
+
+  useEffect(() => {
+    AppwriteService.getStatistics(setStatistics);
   }, []);
 
   const onShowModalPress = ({ groupId, guestId, modalTitle }) => {
@@ -88,6 +94,9 @@ const Admin = () => {
       </div>
 
       <Questionire questions={questions} />
+
+      <Statistics statisticsData={statistics} />
+      
       {modalShown && (
         <Modal setShown={setModalShown} title={modalTitle}>
           <ModalChildren
