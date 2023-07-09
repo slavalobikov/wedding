@@ -41,7 +41,7 @@ const Main = () => {
 
   return (
     <div className={styles.container}>
-      {!group ? (
+      {!!group ? (
         <div className={styles.main}>
           <Header />
           <h3 className={styles.welcomeText}>{group?.welcomeText}</h3>
