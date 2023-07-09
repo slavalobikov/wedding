@@ -13,7 +13,7 @@ const DownloadQR = ({ id, groupName }) => {
     fetch(`https://api.shrtco.de/v2/shorten?url=https://wedding-invitation2.vercel.app/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log('data', data);
+        // console.log('data', data);
         setShortenedUrl(data.result.full_short_link);
       });
   }, [id]);
